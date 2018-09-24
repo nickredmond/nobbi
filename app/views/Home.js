@@ -1,12 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+import { FontAwesome, Entypo } from '@expo/vector-icons';
 
 export class Home extends React.Component {
     static navigationOptions = {
         header: null
     };
+
+    navigate = (routeName) => {
+        const {navigate} = this.props.navigation;
+        navigate(routeName + 'Route');
+    }
 
     render() {
         return (
@@ -29,7 +33,9 @@ export class Home extends React.Component {
                         <FontAwesome name='search' style={styles.buttonIcon} />
                         <Text style={styles.buttonText}>SEARCH</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.button, styles.button_random]}>
+                    <TouchableOpacity 
+                            style={[styles.button, styles.button_random]}
+                            onPress={() => this.navigate('Random')}>
                         <Entypo name='shuffle' style={styles.buttonIcon} />
                         <Text style={styles.buttonText}>RANDOM</Text>
                     </TouchableOpacity>
