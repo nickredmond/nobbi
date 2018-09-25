@@ -3,6 +3,14 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 
 export class NobbiHeader extends React.Component {
+    constructor() {
+        this.state = {
+            currentItemIndex: 0,
+            isBackButtonDisplayed: true,
+            isNextButtonDisplayed: !this.props.items || this.props.items.length > 0
+        };
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -22,19 +30,45 @@ export class NobbiHeader extends React.Component {
     }
 
     goBack = () => {
-        // depends on previous page
+        let currentIndex = this.state.currentItemIndex;
+        currentIndex--;
+
+        const previousItem = null;
+        const isBackButtonDisplayed = true;
+        if (this.props.items && currentIndex >= 0) {
+            previousItem = this.props.items[currentIndex];
+            isBackButtonDisplayed = (currentIndex !== 0);
+        }
+
+        this.setState({
+            currentItemIndex: currentIndex,
+            isBackButtonDisplayed
+        });
+
+        this.props.onBackPress(previousItem);
     }
 
     goNext = () => {
-        // depends on previous page
+        let currentIndex = this.state.currentItemIndex;
+        currentIndex++;
+
+        let nextItem = null; 
+        let isNextButtonDisplayed = true;
+        if (this.props.items) {
+            nextItem = this.props.items[currentIndex];
+            isNextButtonDisplayed = (currentIndex < this.props.items.length - 1);
+        }
+
+        this.setState({
+            currentItemIndex: currentIndex,
+            isNextButtonDisplayed
+        });
+
+        this.props.onNextPress(nextItem);
     }
 
     goHome = () => {
-        this.navigate('Home');
-    }
-
-    navigate = (routeName) => {
-        this.props.navigate(routeName + 'Route');
+        this.props.navigate('HomeRoute');
     }
 }
 
@@ -62,11 +96,4 @@ const styles = StyleSheet.create({
     button_next: {
         alignItems: 'flex-end'
     }
-    
-    // container: {
-    //     marginTop: 15,
-    //     flex: 8,
-    //     alignItems: 'center',
-    //     backgroundColor: '#222'
-    // }
 })
