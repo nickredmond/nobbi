@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, ScrollView, FlatList, StyleSheet, Dimensions } from 'react-native';
+import  Image  from 'react-native-scalable-image';
 
 export class Post extends React.Component {
     constructor(props) {
@@ -10,45 +11,45 @@ export class Post extends React.Component {
         }
     }
 
-    static getDerivedStateFromProps(props, current_state) {
-        let updatedState = null;
+    // static getDerivedStateFromProps(props, current_state) {
+    //     let updatedState = null;
         
-        if (props.imageSources && props.imageSources.length > 0) {
-            console.log('doin it')
-            this.setState({ isLoadingImages: true });
+    //     if (props.imageSources && props.imageSources.length > 0) {
+    //         console.log('doin it')
+    //         this.setState({ isLoadingImages: true });
 
-            const windowWidth = Dimensions.get('window').width;
-            const imagesList = [];
+    //         const windowWidth = Dimensions.get('window').width;
+    //         const imagesList = [];
 
-            const numberOfImageSources = props.imageSources.length;
+    //         const numberOfImageSources = props.imageSources.length;
 
-            props.imageSources.forEach(imageSource => {
-                Image.getSize(imageSource, (width, height) => {
-                    const scaledHeight = height * (windowWidth / width);
-                    imagesList.push({
-                        imageSource,
-                        width: windowWidth,
-                        height: scaledHeight
-                    });
+    //         props.imageSources.forEach(imageSource => {
+    //             Image.getSize(imageSource, (width, height) => {
+    //                 const scaledHeight = height * (windowWidth / width);
+    //                 imagesList.push({
+    //                     imageSource,
+    //                     width: windowWidth,
+    //                     height: scaledHeight
+    //                 });
 
-                    if (imagesList.length === numberOfImageSources) {
-                        updatedState = {
-                            isLoadingImages: false,
-                            isImagesLoaded: true,
-                            imagesList
-                        };
-                    }
-                });
+    //                 if (imagesList.length === numberOfImageSources) {
+    //                     updatedState = {
+    //                         isLoadingImages: false,
+    //                         isImagesLoaded: true,
+    //                         imagesList
+    //                     };
+    //                 }
+    //             });
 
-                images.push(
+    //             images.push(
                     
-                );
-                i++;
-            });
-        }
+    //             );
+    //             i++;
+    //         });
+    //     }
 
-        return updatedState;
-    }
+    //     return updatedState;
+    // }
 
     componentDidMount() {
         console.log('hm ' + JSON.stringify(this.props))
@@ -62,24 +63,30 @@ export class Post extends React.Component {
         }
 
         const textContent = this.props.textContent || "";
+        
+
+        const images = [];
+        if (this.props.imageSources) {
+            const windowWidth = Dimensions.get('window').width;
+            let i = 0;
+            this.props.imageSources.forEach((imageSource) => {
+                images.push(<Image key={i} source={{ uri: imageSource }} width={windowWidth} />);
+                i++;
+            })
+        }
 
         return (
-            <View>
-                { this.state.isImagesLoaded && (
-                    <FlatList 
-                        data={this.state.imagesList} 
+            <ScrollView>
+                {images}
+                    {/* <FlatList 
+                        data={this.props.imageSources} 
                         renderItem={({item}) => 
-                        <Image key={i} source={{ uri: item.imageSource }} style={{width: item.width, height: item.height}} />
+                        
                         } 
-                    />
-                )}
-
-                { this.state.isLoadingImages && (
-                    <Text>[loading images...]</Text>
-                ) }
+                    /> */}
 
                 <Text style={[styles.text, styles.postText]}>{textContent}</Text>
-            </View>
+            </ScrollView>
         );
     }
 }
