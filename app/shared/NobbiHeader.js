@@ -17,16 +17,20 @@ export class NobbiHeader extends React.Component {
 
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={[styles.button, styles.button_back]}>
+                <TouchableOpacity 
+                        style={[styles.button, styles.button_back]} 
+                        onPress={() => this.goBack()}>
                     <Entypo name='chevron-left' style={styles.buttonIcon} />
-                    { this.state.isBackButtonTextDisplayed && <Text>{backButtonText}</Text> }
+                    { this.state.isBackButtonTextDisplayed && <Text style={styles.buttonText}>{backButtonText}</Text> }
                 </TouchableOpacity>
                 <TouchableOpacity 
                         style={[styles.button, styles.button_home]}
                         onPress={() => this.goHome()}>
                     <Entypo name='home' style={styles.buttonIcon} />
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.button_next]}>
+                <TouchableOpacity 
+                        style={[styles.button, styles.button_next]} 
+                        onPress={() => this.goNext()}>
                     <Entypo name='chevron-right' style={styles.buttonIcon} />
                 </TouchableOpacity>
             </View>
@@ -51,10 +55,12 @@ export class NobbiHeader extends React.Component {
         let currentIndex = this.state.currentItemIndex;
         currentIndex++;
 
+        const isBackButtonTextDisplayed = currentIndex <= 0;
         let isNextButtonDisplayed = !this.props.numberOfItems || currentIndex < this.props.numberOfItems - 1;
 
         this.setState({
             currentItemIndex: currentIndex,
+            isBackButtonTextDisplayed,
             isNextButtonDisplayed
         });
 
@@ -68,7 +74,6 @@ export class NobbiHeader extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 3,
         marginTop: 10,
         flexDirection: 'row',
         backgroundColor: '#222'
@@ -82,12 +87,18 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     button_back: {
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        flexDirection: 'row'
     },
     button_home: {
         alignItems: 'center'
     },
     button_next: {
         alignItems: 'flex-end'
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 18,
+        marginTop: 10
     }
 })

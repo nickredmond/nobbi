@@ -41,11 +41,11 @@ export class Random extends React.Component {
     }
 
     onNextPress = () => {
-        if (this.allPosts) {
+        if (this.state.allPosts) {
             const updatedIndex = this.state.currentIndex + 1;
             this.setCurrentPost(updatedIndex);
 
-            const numberOfItemsLeft = this.allPosts.length - updatedIndex - 1;
+            const numberOfItemsLeft = this.state.allPosts.length - updatedIndex - 1;
             if (numberOfItemsLeft < this.ITEMS_REMAINING_REFRESH_THRESHOLD) {
                 getRandomPosts(count=this.POSTS_PRELOAD_AMOUNT).then((posts) => {
                     const preloadedPosts = this.state.allPosts.concat(posts);
@@ -69,9 +69,9 @@ export class Random extends React.Component {
 
         return (
             <View style={styles.container}>
-                <NobbiHeader navigate={navigate} backButtonText='Home' onBackPress={() => this.onBackPress()} onNextPress={() => this.onNextPress()} />
-                <Text>RANDOM</Text>
-                <Post textContent={this.state.currentPost.textContent} imageSources={this.state.currentPost.imageSources}></Post>
+                <NobbiHeader style={styles.header} navigate={navigate} backButtonText='Home' onBackPress={() => this.onBackPress()} onNextPress={() => this.onNextPress()} />
+                <Text style={styles.pageTitle}>RANDOM</Text>
+                <Post style={styles.post} textContent={this.state.currentPost.textContent} imageSources={this.state.currentPost.imageSources}></Post>
             </View>
         )
     }
@@ -82,6 +82,16 @@ const styles = StyleSheet.create({
         marginTop: 15,
         backgroundColor: '#222',
         alignItems: 'center',
+        flex: 1
+    },
+    header: {
+        //flex: 1
+    },
+    pageTitle: {
+        color: '#ddd',
+        fontSize: 24
+    },
+    post: {
         flex: 1
     }
 });
