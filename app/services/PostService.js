@@ -1,5 +1,5 @@
-export const getPostById = (postId) => {
-    const postUrl = `https://us-east-1.amazonaws.com/[somegatewayID]/post/${postId}`;
+export const getRandomPosts = (count) => {
+    const postUrl = `${process.env.REACT_APP_POST_SERVICE_BASE_URL}/posts/random?count=${count}`;
     return fetch(postUrl)
         .then((response) => response.json());
 }

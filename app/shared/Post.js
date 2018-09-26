@@ -5,16 +5,24 @@ export class Post extends React.Component {
 
     render() {
         const images = [];
-        this.props.imageSources.forEach(imageSource => {
-            images.push(
-                <Image source={ imageSource } />
-            );
-        });
+        if (this.props.imageSources) {
+            this.props.imageSources.forEach(imageSource => {
+                images.push(
+                    <Image source={ imageSource } />
+                );
+            });
+        }
 
+        const comments = [];
+        if (this.props.comments) {
+            // render comments
+        }
+
+        const textContent = this.props.textContent || "";
         return (
             <View>
                 {images}
-                <Text>{this.props.textContent}</Text>
+                <Text>{textContent}</Text>
             </View>
         );
     }

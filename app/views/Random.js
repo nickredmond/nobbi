@@ -1,19 +1,77 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NobbiHeader } from '../shared/NobbiHeader';
+import { Post } from '../shared/Post';
+import { getRandomPosts } from '../services/PostService';
 
 export class Random extends React.Component {
+    ITEMS_REMAINING_REFRESH_THRESHOLD = 10;
+    POSTS_PRELOAD_AMOUNT = 20;
+
     static navigationOptions = {
         header: null
     };
+
+    constructor(props) {
+        super(props);
+        this.state = { 
+            currentPost: {
+                textContent: '[ loading... ]', // todo: make this more user-friendly
+                imageSources: []
+            },
+            currentIndex: 0,
+            allPosts: null 
+        };
+
+        getRandomPosts(count=this.POSTS_PRELOAD_AMOUNT).then((posts) => {
+            this.setState({
+                currentPost: posts[0],
+                allPosts: posts
+            });
+        });
+    }
+
+    onBackPress = () => {
+        if (this.state.currentIndex === 0) {
+            this.props.navigation.navigate('HomeRoute');
+        } else {
+            const updatedIndex = this.state.currentIndex - 1;
+            this.setCurrentPost(updatedIndex);
+        }
+    }
+
+    onNextPress = () => {
+        if (this.allPosts) {
+            const updatedIndex = this.state.currentIndex + 1;
+            this.setCurrentPost(updatedIndex);
+
+            const numberOfItemsLeft = this.allPosts.length - updatedIndex - 1;
+            if (numberOfItemsLeft < this.ITEMS_REMAINING_REFRESH_THRESHOLD) {
+                getRandomPosts(count=this.POSTS_PRELOAD_AMOUNT).then((posts) => {
+                    const preloadedPosts = this.state.allPosts.concat(posts);
+                    this.setState({
+                        allPosts: preloadedPosts
+                    });
+                });
+            }
+        }
+    }
+
+    setCurrentPost = (postIndex) => {
+        this.setState({
+            currentPost: this.state.allPosts[postIndex],
+            currentIndex: postIndex
+        });
+    }
 
     render() {
         const {navigate} = this.props.navigation;
 
         return (
             <View style={styles.container}>
-                <NobbiHeader navigate={navigate} />
+                <NobbiHeader navigate={navigate} backButtonText='Home' onBackPress={() => this.onBackPress()} onNextPress={() => this.onNextPress()} />
                 <Text>RANDOM</Text>
+                <Post textContent={this.state.currentPost.textContent} imageSources={this.state.currentPost.imageSources}></Post>
             </View>
         )
     }

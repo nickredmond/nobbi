@@ -1,21 +1,25 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 
 export class NobbiHeader extends React.Component {
-    constructor() {
+    constructor(props) {
+        super(props);
         this.state = {
             currentItemIndex: 0,
-            isBackButtonDisplayed: true,
-            isNextButtonDisplayed: !this.props.items || this.props.items.length > 0
+            isBackButtonTextDisplayed: true,
+            isNextButtonDisplayed: !this.props.numberOfItems || this.props.numberOfItems > 1
         };
     }
 
     render() {
+        const backButtonText = this.props.backButtonText || "Back";
+
         return (
             <View style={styles.container}>
                 <TouchableOpacity style={[styles.button, styles.button_back]}>
                     <Entypo name='chevron-left' style={styles.buttonIcon} />
+                    { this.state.isBackButtonTextDisplayed && <Text>{backButtonText}</Text> }
                 </TouchableOpacity>
                 <TouchableOpacity 
                         style={[styles.button, styles.button_home]}
@@ -33,38 +37,28 @@ export class NobbiHeader extends React.Component {
         let currentIndex = this.state.currentItemIndex;
         currentIndex--;
 
-        const previousItem = null;
-        const isBackButtonDisplayed = true;
-        if (this.props.items && currentIndex >= 0) {
-            previousItem = this.props.items[currentIndex];
-            isBackButtonDisplayed = (currentIndex !== 0);
-        }
+        const isBackButtonTextDisplayed = currentIndex <= 0;
 
         this.setState({
             currentItemIndex: currentIndex,
-            isBackButtonDisplayed
+            isBackButtonTextDisplayed
         });
 
-        this.props.onBackPress(previousItem);
+        this.props.onBackPress();
     }
 
     goNext = () => {
         let currentIndex = this.state.currentItemIndex;
         currentIndex++;
 
-        let nextItem = null; 
-        let isNextButtonDisplayed = true;
-        if (this.props.items) {
-            nextItem = this.props.items[currentIndex];
-            isNextButtonDisplayed = (currentIndex < this.props.items.length - 1);
-        }
+        let isNextButtonDisplayed = !this.props.numberOfItems || currentIndex < this.props.numberOfItems - 1;
 
         this.setState({
             currentItemIndex: currentIndex,
             isNextButtonDisplayed
         });
 
-        this.props.onNextPress(nextItem);
+        this.props.onNextPress();
     }
 
     goHome = () => {
