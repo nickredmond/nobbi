@@ -6,10 +6,12 @@ export class Post extends React.Component {
     render() {
         const images = [];
         if (this.props.imageSources) {
+            let i = 0;
             this.props.imageSources.forEach(imageSource => {
                 images.push(
-                    <Image source={ imageSource } />
+                    <Image key={i} source={{ uri: imageSource }} />
                 );
+                i++;
             });
         }
 
