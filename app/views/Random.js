@@ -71,7 +71,11 @@ export class Random extends React.Component {
             <View style={styles.container}>
                 <NobbiHeader style={styles.header} navigate={navigate} backButtonText='Home' onBackPress={() => this.onBackPress()} onNextPress={() => this.onNextPress()} />
                 <Text style={styles.pageTitle}>RANDOM</Text>
-                <Post style={styles.post} textContent={this.state.currentPost.textContent} imageSources={this.state.currentPost.imageSources}></Post>
+                <Post style={styles.post} 
+                    textContent={this.state.currentPost.textContent} 
+                    imageSources={this.state.currentPost.imageSources}
+                    author={this.state.currentPost.author}>
+                </Post>
             </View>
         )
     }
