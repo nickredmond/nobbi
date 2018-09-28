@@ -1,10 +1,15 @@
 import React from 'react';
 import { View, Text, ScrollView, Button, StyleSheet, Dimensions } from 'react-native';
 import  Image  from 'react-native-scalable-image';
+import { PostCategory } from './PostCategory';
 
 export class Post extends React.Component {
     onAddCommentPress = () => {
 
+    }
+
+    onCategoryUpdate = (categoryName) => {
+        
     }
 
     render() {
@@ -32,6 +37,7 @@ export class Post extends React.Component {
                 <View style={styles.textView}>
                     <Text style={[styles.text, styles.postText]}>{textContent}</Text>
                     <Text style={[styles.text, styles.authorText]}>by <Text style={styles.authorName}>{author}</Text></Text>
+                    <PostCategory onCategoryUpdate={(categoryName) => this.onCategoryUpdate(categoryName)}></PostCategory>
                     <View style={styles.commentsHeader}>
                         <Text style={[styles.text, styles.commentsSectionTitle]}>Comments</Text>
                         <Button style={styles.button_addComment} title={'+ Add'} onPress={() => this.onAddCommentPress()}></Button>

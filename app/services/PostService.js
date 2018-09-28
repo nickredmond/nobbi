@@ -150,3 +150,7 @@ export const getRandomPosts = (count) => {
         resolve(testPosts);
     })
 }
+
+export const voteForPost = (userToken, postId, category) => {
+
+}
