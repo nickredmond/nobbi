@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NobbiHeader } from '../shared/NobbiHeader';
 import { Post } from '../shared/Post';
-import { getRandomPosts } from '../services/PostService';
+import { getRandomPosts, voteForPost } from '../services/PostService';
 
 export class Random extends React.Component {
     ITEMS_REMAINING_REFRESH_THRESHOLD = 10;
@@ -20,10 +20,11 @@ export class Random extends React.Component {
                 imageSources: []
             },
             currentIndex: 0,
-            allPosts: null 
+            allPosts: null
         };
 
-        getRandomPosts(count=this.POSTS_PRELOAD_AMOUNT).then((posts) => {
+        const userToken = null; // todo: user auth, put "user/my vote" in posts coming back :shrug:
+        getRandomPosts(userToken, count=this.POSTS_PRELOAD_AMOUNT).then((posts) => {
             this.setState({
                 currentPost: posts[0],
                 allPosts: posts
@@ -47,7 +48,8 @@ export class Random extends React.Component {
 
             const numberOfItemsLeft = this.state.allPosts.length - updatedIndex - 1;
             if (numberOfItemsLeft < this.ITEMS_REMAINING_REFRESH_THRESHOLD) {
-                getRandomPosts(count=this.POSTS_PRELOAD_AMOUNT).then((posts) => {
+                const userToken = null; // todo: uesr auth
+                getRandomPosts(userToken, count=this.POSTS_PRELOAD_AMOUNT).then((posts) => {
                     const preloadedPosts = this.state.allPosts.concat(posts);
                     this.setState({
                         allPosts: preloadedPosts
@@ -64,9 +66,18 @@ export class Random extends React.Component {
         });
     }
 
+    onUserVote = (category) => {
+        const userToken = null; // todo: user auth
+        voteForPost(userToken, this.props.postId, category);
+
+        const currentPost = this.state.currentPost;
+        currentPost.userVote = (category === currentPost.userVote) ? null : category;
+        this.setState({ currentPost });
+    }
+
     render() {
         const {navigate} = this.props.navigation;
-
+        console.log("wok the vote " + JSON.stringify(this.state.currentPost))
         return (
             <View style={styles.container}>
                 <NobbiHeader style={styles.header} navigate={navigate} backButtonText='Home' onBackPress={() => this.onBackPress()} onNextPress={() => this.onNextPress()} />
@@ -74,7 +85,10 @@ export class Random extends React.Component {
                 <Post style={styles.post} 
                     textContent={this.state.currentPost.textContent} 
                     imageSources={this.state.currentPost.imageSources}
-                    author={this.state.currentPost.author}>
+                    author={this.state.currentPost.author}
+                    voteCounts={this.state.currentPost.voteCounts}
+                    userVote={this.state.currentPost.userVote || null}
+                    onCategoryChange={(category) => this.onUserVote(category)}>
                 </Post>
             </View>
         )

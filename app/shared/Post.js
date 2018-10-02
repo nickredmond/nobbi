@@ -2,14 +2,34 @@ import React from 'react';
 import { View, Text, ScrollView, Button, StyleSheet, Dimensions } from 'react-native';
 import  Image  from 'react-native-scalable-image';
 import { PostCategory } from './PostCategory';
+import { voteForPost } from '../services/PostService';
 
 export class Post extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            voteCounts: null
+        }
+    }
+
     onAddCommentPress = () => {
 
     }
 
     onCategoryUpdate = (categoryName) => {
-        
+        // const userToken = null; // todo: user auth
+        // voteForPost(userToken, this.props.postId, categoryName);
+        this.setState({
+            selectedCategory: this.state.selectedCategory === categoryName ? null : categoryName
+        });
+        this.props.onCategoryChange(categoryName);
+    }
+
+    static getDerivedStateFromProps(props, current_state) {
+        return { 
+            voteCounts: props.voteCounts || null,
+            selectedCategory: props.userVote || null
+        };
     }
 
     render() {
@@ -20,6 +40,7 @@ export class Post extends React.Component {
 
         const textContent = this.props.textContent || "";
         const author = this.props.author || "[unknown]";
+        const voteCounts = this.props.voteCounts || null;
 
         const images = [];
         if (this.props.imageSources) {
@@ -30,14 +51,23 @@ export class Post extends React.Component {
                 i++;
             })
         }
-
+        
         return (
             <ScrollView>
                 {images}
                 <View style={styles.textView}>
                     <Text style={[styles.text, styles.postText]}>{textContent}</Text>
                     <Text style={[styles.text, styles.authorText]}>by <Text style={styles.authorName}>{author}</Text></Text>
-                    <PostCategory onCategoryUpdate={(categoryName) => this.onCategoryUpdate(categoryName)}></PostCategory>
+                    <View style={styles.votingComponentStyle}>
+                        { this.state.voteCounts && (
+                            <PostCategory 
+                                style={styles.votingComponentStyle}
+                                onCategoryUpdate={(categoryName) => this.onCategoryUpdate(categoryName)}
+                                voteCounts={voteCounts}
+                                selectedCategory={this.state.selectedCategory}>
+                            </PostCategory>
+                        ) }
+                    </View>
                     <View style={styles.commentsHeader}>
                         <Text style={[styles.text, styles.commentsSectionTitle]}>Comments</Text>
                         <Button style={styles.button_addComment} title={'+ Add'} onPress={() => this.onAddCommentPress()}></Button>
@@ -79,7 +109,10 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     button_addComment: {
-        flex: 1, 
+        flex: 1,
         alignItems: 'flex-end'
+    },
+    votingComponentStyle: {
+        marginTop: 10
     }
 })
